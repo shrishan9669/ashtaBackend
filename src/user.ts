@@ -93,43 +93,7 @@ const newUser = await prisma.user.create({
 
 
 
-// userrouter.post('/loginuser',async(req:any,res:any)=>{
-//     const {email,password} = req.body;
-//     if(!email || !password){
-//         return res.json({
-//             msg:"Email and password required!!"
-//         })
-//     } 
 
-//     try{
-//         const isexists = await prisma.user.findUnique({
-//             where:{
-//                 email:email,
-//                 password:password
-//             }
-//         })
-        
-//         if(!isexists){
-//             return res.json({
-//                 msg:"Account doesn't exist!!"
-//             })
-//         }
-
-//         const token = jwt.sign({id:isexists.id,email:isexists.email},process.env.secret_key || "");
-
-//         return res.json({
-//             token:token,
-//             msg:"User loggedIn!!"
-//         })
-
-//     }
-//     catch(err){
-//         console.error(err)
-//         return res.status(500).json({
-//             msg:err
-//         })
-//     }
-// })
 
 userrouter.post("/checknumber",async(req:any,res:any)=>{
     const number = req.body.number;
@@ -583,6 +547,21 @@ const transporter = nodemailer.createTransport({
             msg:err
         })
      }
+ })
+
+ userrouter.delete('/removelastLink',async(req:any,res:any)=>{
+    try{ 
+         await prisma.link.deleteMany({});
+         return res.json({
+            msg:"Last link deleted!!"
+         })
+    }
+    catch(err){
+        console.log(err)
+        res.status(500).json({
+            msg:err
+        })
+    }
  })
  
 module.exports = userrouter
