@@ -60,10 +60,17 @@ const {name,password,email,number,role} = req.body;
  try{
 
 // Check if user already exists
-const existingUser = await prisma.user.findUnique({ where: { email } });
+const existingUser = await prisma.user.findFirst({
+    where: {
+      OR: [
+        { email: email },
+        { number: number }
+      ]
+    }
+  });
 if(existingUser){
     return res.json({
-        msg:"Email already exists!!"
+        msg:"User already exists!!"
     })
 }
 const newUser = await prisma.user.create({
@@ -119,6 +126,7 @@ userrouter.post("/checknumber",async(req:any,res:any)=>{
         }
         return res.json({
             status:true,
+            role:exist.role
             
             
         })
